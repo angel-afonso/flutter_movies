@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class MovieItem extends StatelessWidget {
   final String title;
   final String cover;
+  final void Function() onTap;
 
-  MovieItem({this.title, this.cover});
+  MovieItem({this.title, this.cover, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
       child: Image.network(
         cover,
         fit: BoxFit.fill,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_movies/details/screen/details.dart';
 import 'package:flutter_movies/home/models/movie_list_data.dart';
 import 'package:flutter_movies/home/widgets/movie_item.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_movies/utils/endpoints.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -14,8 +16,7 @@ class _HomeState extends State<Home> {
   bool loading = false;
   int page = 1;
   int limit = 15;
-  String host = 'yts.mx';
-  String path = '/api/v2/list_movies.json?';
+  String path = 'list_movies.json';
 
   ScrollController _controller = ScrollController();
 
@@ -42,7 +43,7 @@ class _HomeState extends State<Home> {
       loading = true;
     });
 
-    final uri = Uri.https(host, path, {
+    final uri = formatUri(path, {
       'limit': limit.toString(),
       'page': page.toString(),
     });
@@ -59,6 +60,14 @@ class _HomeState extends State<Home> {
     });
   }
 
+  Function _onTapMovie(int movieID) {
+    return () => Navigator.push(context, MaterialPageRoute(builder: (_) {
+          return Details(
+            movieId: movieID,
+          );
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,8 +82,11 @@ class _HomeState extends State<Home> {
               crossAxisCount: 3,
               childAspectRatio: 0.65,
               children: movies
-                  .map((movie) =>
-                      MovieItem(title: movie.title, cover: movie.cover))
+                  .map((movie) => MovieItem(
+                        title: movie.title,
+                        cover: movie.cover,
+                        onTap: _onTapMovie(movie.id),
+                      ))
                   .toList(),
             ),
           ),
